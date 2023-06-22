@@ -25,6 +25,7 @@ type stepCreateAMI struct {
 	image              *ec2.Image
 	AMISkipCreateImage bool
 	AMISkipBuildRegion bool
+	AMINoReboot        bool
 	IsRestricted       bool
 	Ctx                interpolate.Context
 	Tags               map[string]string
@@ -63,6 +64,7 @@ func (s *stepCreateAMI) Run(ctx context.Context, state multistep.StateBag) multi
 		InstanceId:          instance.InstanceId,
 		Name:                &amiName,
 		BlockDeviceMappings: config.AMIMappings.BuildEC2BlockDeviceMappings(),
+		NoReboot:            &config.AMINoReboot,
 	}
 
 	if !s.IsRestricted {

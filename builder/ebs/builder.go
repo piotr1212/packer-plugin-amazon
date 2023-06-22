@@ -56,6 +56,17 @@ type Config struct {
 	// these additional volumes, and will restore them from snapshots taken
 	// from the source instance. See the
 	// [BlockDevices](#block-devices-configuration) documentation for fields.
+	AMINoReboot bool `mapstructure:"ami_no_reboot" required:"false"`
+	// Indicates whether or not the instance should be automatically rebooted
+	// before creating the image. Specify one of the following values:
+	// - true:  The instance is not rebooted before creating the image. This
+	//          creates crash-consistent snapshots that include only the data
+	//          that has been written to the volumes at the time the snapshots
+	//          are created. Buffered data and data in memory that has not yet
+	//          been written to the volumes is not included in the snapshots.
+	// - false: The instance is rebooted before creating the image. This ensures
+	//          that all buffered data and data in memory is written to the
+	//          volumes before the snapshots are created.
 	LaunchMappings awscommon.BlockDevices `mapstructure:"launch_block_device_mappings" required:"false"`
 	// Tags to apply to the volumes that are *launched* to create the AMI.
 	// These tags are *not* applied to the resulting AMI unless they're
@@ -396,6 +407,7 @@ func (b *Builder) Run(ctx context.Context, ui packersdk.Ui, hook packersdk.Hook)
 		&stepCreateAMI{
 			AMISkipCreateImage: b.config.AMISkipCreateImage,
 			AMISkipBuildRegion: b.config.AMISkipBuildRegion,
+			AMINoReboot:        b.config.AMINoReboot,
 			PollingConfig:      b.config.PollingConfig,
 			IsRestricted:       b.config.IsChinaCloud() || b.config.IsGovCloud(),
 			Tags:               b.config.RunTags,

@@ -158,6 +158,7 @@ type FlatConfig struct {
 	SessionManagerPort                        *int                                   `mapstructure:"session_manager_port" cty:"session_manager_port" hcl:"session_manager_port"`
 	AMISkipCreateImage                        *bool                                  `mapstructure:"skip_create_ami" required:"false" cty:"skip_create_ami" hcl:"skip_create_ami"`
 	AMIMappings                               []common.FlatBlockDevice               `mapstructure:"ami_block_device_mappings" required:"false" cty:"ami_block_device_mappings" hcl:"ami_block_device_mappings"`
+	AMINoReboot                               *bool                                  `mapstructure:"ami_no_reboot" required:"false" cty:"ami_no_reboot" hcl:"ami_no_reboot"`
 	LaunchMappings                            []common.FlatBlockDevice               `mapstructure:"launch_block_device_mappings" required:"false" cty:"launch_block_device_mappings" hcl:"launch_block_device_mappings"`
 	VolumeRunTags                             map[string]string                      `mapstructure:"run_volume_tags" cty:"run_volume_tags" hcl:"run_volume_tags"`
 	VolumeRunTag                              []config.FlatNameValue                 `mapstructure:"run_volume_tag" required:"false" cty:"run_volume_tag" hcl:"run_volume_tag"`
@@ -324,6 +325,7 @@ func (*FlatConfig) HCL2Spec() map[string]hcldec.Spec {
 		"session_manager_port":         &hcldec.AttrSpec{Name: "session_manager_port", Type: cty.Number, Required: false},
 		"skip_create_ami":              &hcldec.AttrSpec{Name: "skip_create_ami", Type: cty.Bool, Required: false},
 		"ami_block_device_mappings":    &hcldec.BlockListSpec{TypeName: "ami_block_device_mappings", Nested: hcldec.ObjectSpec((*common.FlatBlockDevice)(nil).HCL2Spec())},
+		"ami_no_reboot":                &hcldec.AttrSpec{Name: "ami_no_reboot", Type: cty.Bool, Required: false},
 		"launch_block_device_mappings": &hcldec.BlockListSpec{TypeName: "launch_block_device_mappings", Nested: hcldec.ObjectSpec((*common.FlatBlockDevice)(nil).HCL2Spec())},
 		"run_volume_tags":              &hcldec.AttrSpec{Name: "run_volume_tags", Type: cty.Map(cty.String), Required: false},
 		"run_volume_tag":               &hcldec.BlockListSpec{TypeName: "run_volume_tag", Nested: hcldec.ObjectSpec((*config.FlatNameValue)(nil).HCL2Spec())},
